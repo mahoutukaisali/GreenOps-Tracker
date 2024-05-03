@@ -1,0 +1,17 @@
+---
+- name: EDA response to High average processor utilization event
+  hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
+  #192.168.122.143 #"{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
+  tasks: 
+    - name: Display pcp payload 
+      debug:
+        msg: "{{ ansible_eda }}"
+    - name: Display ansible_eda.event.payload.pcp.pmie.message variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.message value:  {{ ansible_eda.event.payload.pcp.pmie.message }} "
+    - name: Display ansible_eda.event.payload.pcp.pmie.hostname variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.hostname value:  {{ ansible_eda.event.payload.pcp.pmie.hostname }} "
+    - name: Display ansible_eda.event.payload.pcp.pmie.rule variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.rule value:  {{ ansible_eda.event.payload.pcp.pmie.rule }} "

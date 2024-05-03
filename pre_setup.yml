@@ -1,0 +1,79 @@
+---
+- hosts: pcp_servers
+  become: true
+  gather_facts: no
+  vars:
+    #default_config: 
+    #  - "default"
+    #server_list: "{{ groups['pcp_servers'] }}"
+    webhook_endpoint: "http://192.168.57.3:5000/endpoint"
+
+  tasks:
+    - name: Install pcp packages on the managed nodes
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - pcp
+        #- pcp-zeroconf
+        #- pcp-system-tools
+        #- pcp-pmda-denki
+
+    - name: Install stress-ng package
+      ansible.builtin.dnf:
+        name: stress-ng
+        state: latest
+
+    - name: Start and enable pmcd service
+      ansible.builtin.systemd_service:
+        name: pmcd
+        state: started
+        enabled: true
+
+    - name: Start and enable pmcd service
+      ansible.builtin.systemd_service:
+        name: pmie
+        state: started
+        enabled: true
+
+    - name: Start and enable pmcd service
+      ansible.builtin.systemd_service:
+        name: pmlogger
+        state: started
+        enabled: true
+
+    #- name: Open firewall for pmcd
+    #  firewalld:
+    #    service: pmcd
+    #    permanent: yes
+    #    immediate: yes
+    #    state: enabled
+
+    - name: Configure global webhook_action as "yes"
+      command: "pmieconf -f /var/lib/pcp/config/pmie/config.default modify global webhook_action yes"
+      #loop: "{{ groups['pcp_servers'] }}"
+
+    # pmie configuration path /var/lib/pcp/config/pmie/config.default
+
+    - name: Configure webhook endpoint
+      command: "pmieconf -f /var/lib/pcp/config/pmie/config.default modify global webhook_endpoint {{ webhook_endpoint }}"
+      loop: "{{ groups['pcp_servers'] }}"
+      notify: Restart pmie
+
+  handlers:
+    - name: Restart pmie
+      ansible.builtin.systemd_service:
+        name: pmie
+        state: restarted
+        enabled: true
+
+      
+    #- name: Check if global webhook_action is configured
+    #  lineinfile:
+    #    state: absent
+    #    path: /var/lib/pcp/config/pmie/config.{{ item }}
+    #    regexp: "//.*global webhook_action = yes"
+    #  check_mode: true
+    #  changed_when: false
+    #  register: global_webhook_action_status
+    #  loop: "{{ server_list }}"

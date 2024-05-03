@@ -1,0 +1,43 @@
+- name: Listen for RHEL Performance Co-Pilot events
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+
+  rules:
+    - name: Respond to PMIE rule for High average processor utilization
+      condition: event.payload.pcp.pmie.rule == "High average processor utilization"      
+      action:
+        run_playbook:
+          name: eda-test.yml
+
+    - name: Respond to PMIE rule for High aggregate context switch rate
+      condition: event.payload.pcp.pmie.rule == "High aggregate context switch rate"
+      action:
+        run_playbook:
+          name: eda-test.yml
+
+    - name: Respond to PMIE rule for Severe demand for real memory
+      condition: event.payload.pcp.pmie.rule == "Severe demand for real memory"
+      action:
+        run_playbook:
+          name: eda-test.yml
+
+    - name: Respond to PMIE rule for High 1-minute load average
+      condition: event.payload.pcp.pmie.rule == "High 1-minute load average"
+      action:
+        run_playbook:
+          name: eda-test.yml
+
+    - name: Respond to PMIE rule for insufficient archive data
+      condition: event.payload.pcp.pmie.rule == "insufficient archive data"
+      action:
+        run_playbook:
+          name: eda-test.yml
+
+    - name:  Display contents of event.payload variable
+      condition: event.payload is defined
+      action:
+        debug:
+          msg: "Received: {{ event.payload }}"

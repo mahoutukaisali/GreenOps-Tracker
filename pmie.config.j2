@@ -1,0 +1,10 @@
+// 1 cpu.util
+delta = 2 min;
+cpu.util = 
+some_host (
+    100 * ( kernel.all.cpu.user  +
+            kernel.all.cpu.sys  +
+            kernel.all.cpu.intr  ) / hinv.ncpu 
+        > 90
+) -> syslog 1 min "High average processor utilization" " %v%util@%h"
+  & shell 1 min "pmie_webhook 'http://192.168.122.204:5000/endpoint%7CHigh average processor utilization" "|%h|%v%util@%h" "'";
