@@ -3,9 +3,6 @@
   become: true
   gather_facts: no
   vars:
-    #default_config: 
-    #  - "default"
-    #server_list: "{{ groups['pcp_servers'] }}"
     webhook_endpoint: "http://192.168.57.3:5000/endpoint"
 
   tasks:
@@ -15,9 +12,6 @@
         state: latest
       loop:
         - pcp
-        #- pcp-zeroconf
-        #- pcp-system-tools
-        #- pcp-pmda-denki
 
     - name: Install additional packages for stress test and analyze performance
       ansible.builtin.dnf:
@@ -26,7 +20,6 @@
       loop:
         - sysstat
         - stress-ng
-        - perf
 
     - name: Start and enable pmcd service
       ansible.builtin.systemd_service:
@@ -55,9 +48,6 @@
 
     - name: Configure global webhook_action as "yes"
       command: "pmieconf -f /var/lib/pcp/config/pmie/config.default modify global webhook_action yes"
-      #loop: "{{ groups['pcp_servers'] }}"
-
-    # pmie configuration path /var/lib/pcp/config/pmie/config.default
 
     - name: Configure webhook endpoint
       command: "pmieconf -f /var/lib/pcp/config/pmie/config.default modify global webhook_endpoint {{ webhook_endpoint }}"
@@ -71,13 +61,3 @@
         state: restarted
         enabled: true
 
-      
-    #- name: Check if global webhook_action is configured
-    #  lineinfile:
-    #    state: absent
-    #    path: /var/lib/pcp/config/pmie/config.{{ item }}
-    #    regexp: "//.*global webhook_action = yes"
-    #  check_mode: true
-    #  changed_when: false
-    #  register: global_webhook_action_status
-    #  loop: "{{ server_list }}"

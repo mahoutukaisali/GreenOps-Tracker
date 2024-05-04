@@ -24,6 +24,12 @@
         run_playbook:
           name: playbooks/cpu.load_average.yml
 
+    - name: Respond to PMIE rule filesys.filling
+      condition: event.payload.pcp.pmie.rule == "File system is filling up"
+      action:
+        run_playbook:
+          name: playbooks/filesys.filling.yml
+
     - name:  Display any contents of event.payload variable
       condition: event.payload is defined
       action:

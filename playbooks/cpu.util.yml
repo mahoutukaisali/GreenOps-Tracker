@@ -3,6 +3,8 @@
   hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
   become: true
   tasks: 
+    - ansible.builtin.include_vars: vars/webex.yml
+
     - name: Display ansible_eda.event.payload.pcp.pmie.message variable
       debug:
         msg: "ansible_eda.event.payload.pcp.pmie.message value: {{ ansible_eda.event.payload.pcp.pmie.message }}"
@@ -25,3 +27,11 @@
       ansible.builtin.copy:
         content: "{{ mpstatResult.stdout }}"
         dest: "/opt/cpu.util_{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}.txt"
+
+    - name: Cisco Webex Teams - Text Message to a Room
+      community.general.cisco_webex:
+        recipient_type: roomId
+        recipient_id: "{{ room_id }}"
+        msg_type: markdown
+        personal_token: "{{ token }}"
+        msg: "pcp `cpu.util` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\n Here is `mpstat` command result.\n{{ mpstatResult.stdout }}"
