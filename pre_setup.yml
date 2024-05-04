@@ -19,10 +19,14 @@
         #- pcp-system-tools
         #- pcp-pmda-denki
 
-    - name: Install stress-ng package
+    - name: Install additional packages for stress test and analyze performance
       ansible.builtin.dnf:
-        name: stress-ng
+        name: "{{ item }}"
         state: latest
+      loop:
+        - sysstat
+        - stress-ng
+        - perf
 
     - name: Start and enable pmcd service
       ansible.builtin.systemd_service:

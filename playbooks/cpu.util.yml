@@ -1,0 +1,27 @@
+---
+- name: EDA response to PMIE rule cpu.util
+  hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
+  become: true
+  tasks: 
+    - name: Display ansible_eda.event.payload.pcp.pmie.message variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.message value: {{ ansible_eda.event.payload.pcp.pmie.message }}"
+   
+    - name: Display ansible_eda.event.payload.pcp.pmie.rule variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.rule value: {{ ansible_eda.event.payload.pcp.pmie.rule }}"
+
+    - name: Collect mpstat data to check CPU 
+      command: mpstat 2 5
+      register: mpstatResult
+
+    - name: Make /opt writable directory
+      ansible.builtin.file:
+        path: /opt
+        state: directory
+        mode: '0777'
+
+    - name: Save mpstat result
+      ansible.builtin.copy:
+        content: "{{ mpstatResult.stdout }}"
+        dest: "/opt/cpu.util_{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}.txt"

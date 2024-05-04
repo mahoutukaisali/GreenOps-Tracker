@@ -1,0 +1,27 @@
+---
+- name: EDA response to PMIE rule cpu.load_average
+  hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
+  become: true
+  tasks: 
+    - name: Display ansible_eda.event.payload.pcp.pmie.message variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.message value: {{ ansible_eda.event.payload.pcp.pmie.message }}"
+   
+    - name: Display ansible_eda.event.payload.pcp.pmie.rule variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.rule value: {{ ansible_eda.event.payload.pcp.pmie.rule }}"
+
+    - name: Collect uptime data to check CPU load average over the past minutes
+      command: uptime
+      register: uptimeResult
+
+    - name: Make /opt writable directory
+      ansible.builtin.file:
+        path: /opt
+        state: directory
+        mode: '0777'
+
+    - name: Save uptime result
+      ansible.builtin.copy:
+        content: "{{ uptimeResult.stdout }}"
+        dest: "/opt/cpu.load_average_{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}.txt"
