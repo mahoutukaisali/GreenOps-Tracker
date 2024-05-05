@@ -148,7 +148,7 @@ PLAY RECAP *********************************************************************
 192.168.57.10              : ok=8    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 ### Step 4: Check out Cisco Webex room
-Additionally, you can see a message received from Ansible in Cisco Webex room.
+Additionally, you can see a message received from Ansible in Cisco Webex room. In this screenshot, you can see `uptime` command result of pcp server host `192.168.57.10` because it's already run by Ansible Playbook. This allows you to check the state of the uptime when the event occurred. You won't miss real-time data.
 
 ![](cpu.load_average_webex.png)
 
