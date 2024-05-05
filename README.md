@@ -147,10 +147,10 @@ ok: [192.168.57.10]
 PLAY RECAP *********************************************************************
 192.168.57.10              : ok=8    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
-### Step 4: Check out Cisco Webex Teams room
-Additionally, you can see a message received from Ansible.
+### Step 4: Check out Cisco Webex room
+Additionally, you can see a message received from Ansible in Cisco Webex room.
 
-(cpu.load_average_webex.png)
+![](cpu.load_average_webex.png)
 
 # Conclusion
 **GreenOps Tracker** is not just a monitoring tool; it is a strategic asset for sustainable IT management. By providing real-time insights and automated responses, it plays a pivotal role in optimizing server performance and advancing environmental sustainability in the tech industry.
