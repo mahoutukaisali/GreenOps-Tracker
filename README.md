@@ -27,8 +27,7 @@ To further enhance **GreenOps Tracker**, potential future features might include
 - **Expanded Metric Support**: Including additional metrics such as network performance and advanced thermal metrics.
 - **Greater Automation**: Developing more sophisticated response mechanisms that automatically adjust configurations based on the data received.
 
-## Conclusion
-**GreenOps Tracker** is not just a monitoring tool; it is a strategic asset for sustainable IT management. By providing real-time insights and automated responses, it plays a pivotal role in optimizing server performance and advancing environmental sustainability in the tech industry.
+
 
 # Installation
 ## Prerequisites
@@ -111,3 +110,47 @@ $ stress-ng --cpu $(nproc) --vm 2 --fork 8 --switch 4 --timeout 120s -v
 **Note: If the above command does not sufficiently load the server, try increasing the numbers to match the specifications of your server.**
 
 ### Step 3: Monitoring logs from Ansible Event-Driven. 
+Once Ansible server receives a webhook from a pcp server, one of a playbooks located under `playbooks` directory will be launched. In the following execution output example, a playbook `cpu.load_average.yml` is launched by Ansible Event-Driven because the received webhook includes `High 1-minute load average` as a message. 
+```
+2024-05-04 14:28:34,577 - aiohttp.access - INFO - 192.168.57.10 [04/May/2024:14:28:34 +0000] "POST /endpoint HTTP/1.1" 200 159 "-" "curl/8.2.1"
+
+PLAY [EDA response to PMIE rule cpu.load_average] ******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [192.168.57.10]
+
+TASK [ansible.builtin.include_vars] ********************************************
+ok: [192.168.57.10]
+
+TASK [Display ansible_eda.event.payload.pcp.pmie.message variable] *************
+ok: [192.168.57.10] => {
+    "msg": "ansible_eda.event.payload.pcp.pmie.message value: 11.2load@192.168.57.10"
+}
+
+TASK [Display ansible_eda.event.payload.pcp.pmie.rule variable] ****************
+ok: [192.168.57.10] => {
+    "msg": "ansible_eda.event.payload.pcp.pmie.rule value: High 1-minute load average"
+}
+
+TASK [Collect uptime data to check CPU load average over the past minutes] *****
+changed: [192.168.57.10]
+
+TASK [Make /opt writable directory] ********************************************
+ok: [192.168.57.10]
+
+TASK [Save uptime result] ******************************************************
+changed: [192.168.57.10]
+
+TASK [Cisco Webex Teams - Text Message to a Room] ******************************
+ok: [192.168.57.10]
+
+PLAY RECAP *********************************************************************
+192.168.57.10              : ok=8    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+### Step 4: Check out Cisco Webex Teams room
+Additionally, you can see a message received from Ansible.
+
+(docs/cisco_webex_output_cpu.load_average.md)
+
+# Conclusion
+**GreenOps Tracker** is not just a monitoring tool; it is a strategic asset for sustainable IT management. By providing real-time insights and automated responses, it plays a pivotal role in optimizing server performance and advancing environmental sustainability in the tech industry.
