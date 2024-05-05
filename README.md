@@ -30,5 +30,27 @@ To further enhance **GreenOps Tracker**, potential future features might include
 ## Conclusion
 **GreenOps Tracker** is not just a monitoring tool; it is a strategic asset for sustainable IT management. By providing real-time insights and automated responses, it plays a pivotal role in optimizing server performance and advancing environmental sustainability in the tech industry.
 
+# Installation
+## Prerequisites
+- This project needs 3 Linux servers assuming CentOS/Fedora/Red Hat Enterprise Linux as an OS type. This project has been tested on Fedora servers.
+- An OS user called `ansible` exists on all Fedora nodes and this user can become `sudo` user.
+- The below steps will be operated by `ansible` user.
+  
+### Step 1: Install Ansible and Ansible Event-Driven
+The installation process follows the official document:
+https://ansible.readthedocs.io/projects/rulebook/en/stable/installation.html
 
-
+Run the below commands on one of the fedora node:
+```
+$ sudo dnf --assumeyes install java-17-openjdk python3-pip
+$ export JAVA_HOME=/usr/lib/jvm/jre-17-openjdk
+$ pip3 install ansible ansible-rulebook ansible-runner
+```
+Install ansible.eda collection:
+```
+$ ansible-galaxy collection install ansible.eda
+```
+### Step 2: Clone this **GreenOps Tracker** repository on the Ansible node
+```
+$ git clone
+```
