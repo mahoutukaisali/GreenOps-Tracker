@@ -150,7 +150,7 @@ PLAY RECAP *********************************************************************
 ### Step 4: Check out Cisco Webex Teams room
 Additionally, you can see a message received from Ansible.
 
-(docs/cisco_webex_output_cpu.load_average.md)
+(cisco_webex_output_cpu.load_average.md)
 
 # Conclusion
 **GreenOps Tracker** is not just a monitoring tool; it is a strategic asset for sustainable IT management. By providing real-time insights and automated responses, it plays a pivotal role in optimizing server performance and advancing environmental sustainability in the tech industry.
