@@ -35,6 +35,7 @@ To further enhance **GreenOps Tracker**, potential future features might include
 - This project needs 3 Linux servers assuming CentOS/Fedora/Red Hat Enterprise Linux as an OS type. This project has been tested on Fedora servers.
 - An OS user called `ansible` exists on all Fedora nodes and this user can become `sudo` user.
 - The below steps will be operated by `ansible` user.
+- `ansible` user can ssh key login to client servers from the ansible server.
   
 ### Step 1: Install Ansible and Ansible Event-Driven
 The installation process follows the official document:
@@ -50,7 +51,36 @@ Install ansible.eda collection:
 ```
 $ ansible-galaxy collection install ansible.eda
 ```
-### Step 2: Clone this **GreenOps Tracker** repository on the Ansible node
+### Step 2: Clone this "GreenOps Tracker" repository on the Ansible node
 ```
 $ git clone
+```
+
+### Step 3: Modify the cloned source code to suit your Linux environments
+Open `inventory.yml` file and edit IP addresses and `sudo password`. Below is the current file contents. You can replace `192.168.57.10/192.168.57.11` with your pcp server's IP and replace `ansible_become_pass: changeme` with your `sudo password`.
+```
+---
+all:
+  children:
+    pcp_servers:
+      hosts:
+        192.168.57.10:
+          ansible_become_pass: changeme
+        192.168.57.11:
+          ansible_become_pass: changeme
+```
+
+Next, open `pre_setup.yml` file and replace `192.168.57.3` part with your ansible server's IP address.
+```
+---
+- hosts: pcp_servers
+  become: true
+  gather_facts: no
+  vars:
+    webhook_endpoint: "http://192.168.57.3:5000/endpoint"
+```
+
+Now you can launch `pre_setup.yml` playbook on the Ansible server. This will install all the necessary packages on pcp client servers to try this project.
+```
+$  ansible-rulebook --rulebook pcpEventRules.yml -i inventory.yml --verbose
 ```
