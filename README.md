@@ -36,6 +36,7 @@ To further enhance **GreenOps Tracker**, potential future features might include
 - An OS user called `ansible` exists on all Fedora nodes and this user can become `sudo` user.
 - The below steps will be operated by `ansible` user.
 - `ansible` user can ssh key login to client servers from the ansible server.
+- Make sure you have `Cisco Webex` account and a room that can receive notifications from the Ansible server.
   
 ### Step 1: Install Ansible and Ansible Event-Driven
 The installation process follows the official document:
@@ -56,7 +57,7 @@ $ ansible-galaxy collection install ansible.eda
 $ git clone
 ```
 
-### Step 3: Modify the cloned source code to suit your Linux environments
+### Step 3: Modify the cloned source code to suit your environments
 Open `inventory.yml` file and edit IP addresses and `sudo password`. Below is the current file contents. You can replace `192.168.57.10/192.168.57.11` with your pcp server's IP and replace `ansible_become_pass: changeme` with your `sudo password`.
 ```
 ---
@@ -80,7 +81,33 @@ Next, open `pre_setup.yml` file and replace `192.168.57.3` part with your ansibl
     webhook_endpoint: "http://192.168.57.3:5000/endpoint"
 ```
 
+Next, open `playbooks/vars/webex.yml` file and replace `changeme` with the actual values. `room_id` is your Cisco Webex room ID, `token` is your Cisco Webex account's token.
+```
+---
+room_id: changeme
+token: changeme
+```
+For further information about Cisco Webex, please refer to the official documentation: https://developer.webex.com/docs
+
 Now you can launch `pre_setup.yml` playbook on the Ansible server. This will install all the necessary packages on pcp client servers to try this project.
+```
+$ ansible-playbook pre_setup.yml
+```
+
+# Launch GreenOps Tracker project
+Now you can try `GreenOps Tracker` project. 
+
+### Step 1: Run "ansible-rulebook" on the Ansible server. This will listen to 0.0.0.0:5000 on the Ansible server and wait to receive the payloads from pcp servers.
 ```
 $  ansible-rulebook --rulebook pcpEventRules.yml -i inventory.yml --verbose
 ```
+
+### Step 2: Put a load on the pcp server.　
+We have already installed `stress-ng` package in pcp servers using `pre_setup.yml` playbook at the `Installation` step, so in this example, we can use `stress-ng` to put a load on the pcp server.
+example command:
+```
+$ stress-ng --cpu $(nproc) --vm 2 --fork 8 --switch 4 --timeout 120s -v
+```
+**Note: If the above command does not sufficiently load the server, try increasing the numbers to match the specifications of your server.**
+
+### Step 3: Monitoring logs from Ansible Event-Driven. 
