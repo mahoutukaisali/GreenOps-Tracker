@@ -162,7 +162,62 @@ Additionally, you can see a message sent from Ansible Playbook in Cisco Webex ro
 <br>
 
 # Configuration
-In the above `Usage` section, `cpu.load_average.yml` playbook is launched by Ansible Event-Driven because an event occurres matching one of the pcp rules `cpu.load_average`. In this project, there are more rules to 
+In the above `Usage` section, `cpu.load_average.yml` playbook is launched by Ansible Event-Driven because an event matching one of the pcp rules `cpu.load_average`. In this project, there are more playbooks. Let me explain more 2 playbook files.
+
+**playbooks/filesys.filling.yml**
+This file is executed by Ansible EventDriven when an event defined in the PCP rule "filesys.filling" occurs. This playbook not only collects the state of the file system but also performs tasks to delete files in the /tmp directory of the monitored server (PCP server) if they haven't been used in the past 7 days. This allows for automatic resolution of a full file system state. Not only does it prevent troubles, but it also saves resources by removing unnecessary files.
+
+Applicable parts in `playbooks/filesys.filling.yml`:
+```
+    - name: Collect file system space usage
+      command: df -h
+      register: result
+
+    - name: Make /opt writable directory
+      ansible.builtin.file:
+        path: /opt
+        state: directory
+        mode: '0777'
+
+    - name: Save `df -h` command result
+      ansible.builtin.copy:
+        content: "{{ result.stdout }}"
+        dest: "/opt/filesys.filling_{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}.txt"
+    
+    - name: Delete unused files for 7 days
+      command: find /tmp -type f -atime +7 -delete
+
+
+    - name: Cisco Webex Teams - Text Message to a Room
+      community.general.cisco_webex:
+        recipient_type: roomId
+        recipient_id: "{{ room_id }}"
+        msg_type: markdown
+        personal_token: "{{ token }}"
+        msg: "pcp `filesys.filling` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\nHere is `df -h` result.\n{{ result.stdout }}"
+
+```
+
+<br>
+
+**playbooks/memory.exhausted.yml**
+In cases where performance-related issues are not consistently occurring but rather sporadic, there may be a need to gather information by executing commands immediately when the issue arises. For example, to identify a process consuming excessive memory. This playbook will run `ps aux` command and send that result to Cisco Webex room.
+
+Applicable parts in `playbooks/memory.exhausted.yml`.
+```
+    - name: Investigate which processes are consuming high memory
+      command: ps aux --sort=-%mem | head
+      register: processResult
+
+    - name: Cisco Webex Teams - Text Message to a Room
+      community.general.cisco_webex:
+        recipient_type: roomId
+        recipient_id: "{{ room_id }}"
+        msg_type: markdown
+        personal_token: "{{ token }}"
+        msg: "pcp `memory.exhausted` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\nHere is `ps aux` command result.\n{{ processResult.stdout }}"
+```
+
 
 
 # Conclusion

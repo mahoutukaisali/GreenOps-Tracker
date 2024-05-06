@@ -4,7 +4,7 @@
   become: true
   tasks: 
     - ansible.builtin.include_vars: vars/webex.yml
-    
+
     - name: Display ansible_eda.event.payload.pcp.pmie.message variable
       debug:
         msg: "ansible_eda.event.payload.pcp.pmie.message value: {{ ansible_eda.event.payload.pcp.pmie.message }}"
@@ -28,10 +28,14 @@
         content: "{{ vmstatResult.stdout }}"
         dest: "/opt/memory.exhausted.vmstat_{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}.txt"
 
+    - name: Investigate which processes are consuming high memory
+      command: ps aux --sort=-%mem | head
+      register: processResult
+
     - name: Cisco Webex Teams - Text Message to a Room
       community.general.cisco_webex:
         recipient_type: roomId
         recipient_id: "{{ room_id }}"
         msg_type: markdown
         personal_token: "{{ token }}"
-        msg: "pcp `memory.exhausted` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\nHere is `vmstat` command result.\n{{ vmstatResult.stdout }}"
+        msg: "pcp `memory.exhausted` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\nHere is `ps aux` command result.\n{{ processResult.stdout }}"
