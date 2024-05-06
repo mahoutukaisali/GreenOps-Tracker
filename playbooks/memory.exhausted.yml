@@ -1,0 +1,41 @@
+---
+- name: EDA response to PMIE rule memory.exhausted
+  hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
+  become: true
+  tasks: 
+    - ansible.builtin.include_vars: vars/webex.yml
+
+    - name: Display ansible_eda.event.payload.pcp.pmie.message variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.message value: {{ ansible_eda.event.payload.pcp.pmie.message }}"
+   
+    - name: Display ansible_eda.event.payload.pcp.pmie.rule variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.rule value: {{ ansible_eda.event.payload.pcp.pmie.rule }}"
+
+    - name: Collect vmstat for high memory demand scenarios.
+      command: vmstat
+      register: vmstatResult
+
+    - name: Make /opt writable directory
+      ansible.builtin.file:
+        path: /opt
+        state: directory
+        mode: '0777'
+
+    - name: Save vmstat result
+      ansible.builtin.copy:
+        content: "{{ vmstatResult.stdout }}"
+        dest: "/opt/memory.exhausted.vmstat_{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}.txt"
+
+    - name: Investigate which processes are consuming high memory
+      command: ps aux --sort=-%mem | head
+      register: processResult
+
+    - name: Cisco Webex Teams - Text Message to a Room
+      community.general.cisco_webex:
+        recipient_type: roomId
+        recipient_id: "{{ room_id }}"
+        msg_type: markdown
+        personal_token: "{{ token }}"
+        msg: "pcp `memory.exhausted` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\nHere is `ps aux` command result.\n{{ processResult.stdout }}"

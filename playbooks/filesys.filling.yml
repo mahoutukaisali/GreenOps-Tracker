@@ -1,0 +1,41 @@
+---
+- name: EDA response to PMIE rule cpu.load_average
+  hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
+  become: true
+  tasks: 
+    - ansible.builtin.include_vars: vars/webex.yml
+
+    - name: Display ansible_eda.event.payload.pcp.pmie.message variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.message value: {{ ansible_eda.event.payload.pcp.pmie.message }}"
+   
+    - name: Display ansible_eda.event.payload.pcp.pmie.rule variable
+      debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.rule value: {{ ansible_eda.event.payload.pcp.pmie.rule }}"
+
+    - name: Collect file system space usage
+      command: df -h
+      register: result
+
+    - name: Make /opt writable directory
+      ansible.builtin.file:
+        path: /opt
+        state: directory
+        mode: '0777'
+
+    - name: Save `df -h` command result
+      ansible.builtin.copy:
+        content: "{{ result.stdout }}"
+        dest: "/opt/filesys.filling_{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}.txt"
+    
+    - name: Delete unused files for 7 days
+      command: find /tmp -type f -atime +7 -delete
+
+
+    - name: Cisco Webex Teams - Text Message to a Room
+      community.general.cisco_webex:
+        recipient_type: roomId
+        recipient_id: "{{ room_id }}"
+        msg_type: markdown
+        personal_token: "{{ token }}"
+        msg: "pcp `filesys.filling` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\nHere is `df -h` result.\n{{ result.stdout }}"

@@ -1,0 +1,63 @@
+---
+- hosts: pcp_servers
+  become: true
+  gather_facts: no
+  vars:
+    webhook_endpoint: "http://192.168.57.3:5000/endpoint"
+
+  tasks:
+    - name: Install pcp packages on the managed nodes
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - pcp
+
+    - name: Install additional packages for stress test and analyze performance
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - sysstat
+        - stress-ng
+
+    - name: Start and enable pmcd service
+      ansible.builtin.systemd_service:
+        name: pmcd
+        state: started
+        enabled: true
+
+    - name: Start and enable pmcd service
+      ansible.builtin.systemd_service:
+        name: pmie
+        state: started
+        enabled: true
+
+    - name: Start and enable pmcd service
+      ansible.builtin.systemd_service:
+        name: pmlogger
+        state: started
+        enabled: true
+
+    #- name: Open firewall for pmcd
+    #  firewalld:
+    #    service: pmcd
+    #    permanent: yes
+    #    immediate: yes
+    #    state: enabled
+
+    - name: Configure global webhook_action as "yes"
+      command: "pmieconf -f /var/lib/pcp/config/pmie/config.default modify global webhook_action yes"
+
+    - name: Configure webhook endpoint
+      command: "pmieconf -f /var/lib/pcp/config/pmie/config.default modify global webhook_endpoint {{ webhook_endpoint }}"
+      loop: "{{ groups['pcp_servers'] }}"
+      notify: Restart pmie
+
+  handlers:
+    - name: Restart pmie
+      ansible.builtin.systemd_service:
+        name: pmie
+        state: restarted
+        enabled: true
+
