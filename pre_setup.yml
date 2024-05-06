@@ -2,10 +2,10 @@
 - hosts: pcp_servers
   become: true
   gather_facts: no
-  vars:
-    webhook_endpoint: "http://192.168.57.3:5000/endpoint"
 
   tasks:
+    - ansible.builtin.include_vars: vars/webhook.yml
+    
     - name: Install pcp packages on the managed nodes
       ansible.builtin.dnf:
         name: "{{ item }}"
