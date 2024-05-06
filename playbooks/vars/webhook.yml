@@ -1,0 +1,2 @@
+---
+webhook_endpoint: "http://CHANGEME:5000/endpoint"
