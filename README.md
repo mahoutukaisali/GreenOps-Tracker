@@ -55,7 +55,7 @@ $ ansible-galaxy collection install ansible.eda
 
 ### Step 2: Clone this "GreenOps Tracker" repository on the Ansible node
 ```
-$ git clone
+$ git clone https://github.com/mahoutukaisali/GreenOps-Tracker
 ```
 
 ### Step 3: Modify the cloned source code to suit your environments
@@ -72,14 +72,10 @@ all:
           ansible_become_pass: changeme
 ```
 
-Next, open `pre_setup.yml` file and replace `192.168.57.3` part with your ansible server's IP address.
+Next, open vars/webhook.yml` file and replace `CHANGEME` part with your ansible server's actual IP address.
 ```
 ---
-- hosts: pcp_servers
-  become: true
-  gather_facts: no
-  vars:
-    webhook_endpoint: "http://192.168.57.3:5000/endpoint"
+webhook_endpoint: "http://CHANGEME:5000/endpoint"
 ```
 
 Next, open `playbooks/vars/webex.yml` file and replace `changeme` with the actual values. `room_id` is your Cisco Webex room ID, `token` is your Cisco Webex account's token.
