@@ -1,0 +1,8 @@
+GreenOps-Tracker
+
+This project includes the following third-party dependencies:
+
+- Ansible: GNU General Public License (GPL) version 3
+  (For more information, see https://github.com/ansible/ansible/blob/devel/licenses)
+
+This software is licensed under the Apache License, Version 2.0.
