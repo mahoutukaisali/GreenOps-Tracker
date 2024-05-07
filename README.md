@@ -25,7 +25,6 @@ As digital infrastructures expand, the energy consumption of data centers has be
 
 ## Future Extensions
 To further enhance **GreenOps Tracker**, potential future features might include:
-- **Enhanced Predictive Capabilities**: Using AI to predict potential issues before they occur based on historical data trends.
 - **Expanded Metric Support**: Including additional metrics such as network performance and advanced thermal metrics.
 - **Expanded Monitoring Support**: PCP supports integration with Grafana. Using these, we can measure server power consumption and verify how much reduction in power consumption we achieve by modifying server resources. 
 - **Greater Automation**: Developing more sophisticated response mechanisms that automatically adjust configurations based on the data received.
