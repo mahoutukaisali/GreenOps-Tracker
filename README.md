@@ -19,6 +19,8 @@ As digital infrastructures expand, the energy consumption of data centers has be
 3. **Dynamic Data Collection**: The triggered playbooks are designed to collect detailed performance data such as CPU usage, memory usage, and filesystem status. This ensures that server administrators have access to the most relevant and current data.
 4. **Automatic Resource Adjustment**: The Ansible playbooks executed by the Ansible Event Driven Server also automatically adjust server resources based on the performance data and conditions detected, ensuring optimal server operation without manual intervention.
 
+Here is the basic workflow of this system(Of course this configuration is scalable)
+
 ![the system structure](docs/GreenOps_system_structure2.png)
 
 
