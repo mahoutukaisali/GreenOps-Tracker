@@ -218,7 +218,10 @@ Applicable parts in `playbooks/memory.exhausted.yml`.
         msg: "pcp `memory.exhausted` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\nHere is `ps aux` command result.\n{{ processResult.stdout }}"
 ```
 
-
-
 # Conclusion
 **GreenOps Tracker** is not just a monitoring tool; it is a strategic asset for sustainable IT management. By providing real-time insights and automated responses, it plays a pivotal role in optimizing server performance and advancing environmental sustainability in the tech industry.
+
+
+# Usage Video
+
+[![Watch the video]](https://youtu.be/WwEzVjwcGHI)
