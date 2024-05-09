@@ -223,5 +223,10 @@ Applicable parts in `playbooks/memory.exhausted.yml`.
 
 
 # Usage Video
-
+Here are the steps what's going on this video:
+1. Run `ansible-rulebook --rulebook pcpEventRules.yml -i inventory.yml --verbose` in the Ansible node
+2. Change a terminal to the managed node then run `stress-ng --cpu $(nproc) --vm 2 --fork 8 --switch 4 --timeout 120s -v` in the managed node
+3. Back to a Ansible node terminal and wait until receiving a webhook from the managed node
+4. At 2:20 in a video, Ansible node receives a webhook from a managed node and then launches Ansible Playbook.
+5. You can also see that Cisco Webex(opening in the right side of a screen) got a message from Ansible.
 [![Watch the video]](https://youtu.be/WwEzVjwcGHI)
