@@ -1,5 +1,5 @@
 [![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/mahoutukaisali/GreenOps-Tracker)
-[![Run in Cisco Cloud IDE](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-runable-icon.svg)](https://developer.cisco.com/codeexchange/devenv/mahoutukaisali/GreenOps-Tracker/)
+[![Build For Better 2024 Winner](https://static.production.devnetcloud.com/codeexchange/assets/images/DevNet-Build_For_Better_2024_Winner-Blue.svg)](https://blogs.cisco.com/developer/announcing-the-build-for-better-code-challenge-winners)
 
 # GreenOps Tracker
 
