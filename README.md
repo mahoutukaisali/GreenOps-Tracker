@@ -37,8 +37,7 @@ To further enhance **GreenOps Tracker**, potential future features might include
 # Installation
 ## Prerequisites
 - This project needs Linux servers assuming CentOS/Fedora/Red Hat Enterprise Linux as an OS type. If you uses Fedora, the latest Fedora 39 is required. If you uses Red Hat Enterprise Linux, RHEL 9.3 or higher is required.
-- An OS user called `ansible` exists on all Fedora nodes and this user can become `sudo` user.
-- `ansible` user can ssh key login to pcp servers from the ansible server.
+- The OS user logging into the pcp servers through Ansible has sudo privilege escalation.
 - Make sure you have `Cisco Webex` account and a room that can receive notifications from the Ansible server.
   
 ### Step 1: Install Ansible and Ansible Event-Driven
