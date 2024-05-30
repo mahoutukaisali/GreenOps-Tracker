@@ -46,7 +46,7 @@ $ git clone https://github.com/mahoutukaisali/GreenOps-Tracker
 
 ## Installation patterns:
 - There are two patterns to build an Ansible Event-Driven server. The most easy way is to use an ansible-rulebook container image distributed by Red Hat quay.io registry.
-  But you can also install and run Ansible Event-Driven server directory on the host as well.
+  But you can also install and run Ansible Event-Driven server directly on the host as well.
 
 ### Pattern 1: Using ansible-rulebook container image
 Here are the steps to build Ansible Event-Driven server using a container image.
