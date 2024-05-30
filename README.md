@@ -36,15 +36,63 @@ To further enhance **GreenOps Tracker**, potential future features might include
 
 # Installation
 ## Prerequisites
-- This project needs Linux servers assuming CentOS/Fedora/Red Hat Enterprise Linux as an OS type. If you uses Fedora, the latest Fedora 39 is required. If you uses Red Hat Enterprise Linux, RHEL 9.3 or higher is required.
+- Currently, this project assumes CentOS/Fedora/Red Hat Enterprise Linux as monitored nodes. Also, if the monitored nodes are Fedora, the latest Fedora 39 is required. If the monitored nodes are Red Hat Enterprise Linux, RHEL 9.3 or higher is required.
 - The OS user logging into the pcp servers through Ansible has sudo privilege escalation.
 - Make sure you have `Cisco Webex` account and a room that can receive notifications from the Ansible server.
-  
-### Step 1: Install Ansible and Ansible Event-Driven
+- Please clone this repository on your host under any directory.
+```
+$ git clone https://github.com/mahoutukaisali/GreenOps-Tracker
+```
+
+## Installation patterns:
+- There are two patterns to build an Ansible Event-Driven server. The most easy way is to use an ansible-rulebook container image distributed by Red Hat quay.io registry.
+  But you can also install and run Ansible Event-Driven server directory on the host as well.
+
+### Pattern 1: Using ansible-rulebook container image
+Here are the steps to build Ansible Event-Driven server using a container image.
+1. Download ansible-rulebook container image from [Red Hat quay.io registry](https://quay.io/repository/ansible/ansible-rulebook).
+```
+$ podman pull quay.io/ansible/ansible-rulebook
+```
+
+2. Launch a container. The below example launches a container using `quay.io/ansible/ansible-rulebook` image, mounts a project directory, and listens to port 5000. You need to replace `/home/vagrant/work/GreenOps-Tracker` with an actual project directory.
+```
+$ sudo podman run -p 5000:5000  -v /home/vagrant/work/GreenOps-Tracker:/work:z quay.io/ansible/ansible-rulebook ansible-rulebook --rulebook /work/pcpEventRules.yml -i /work/inventory.yml --verbose
+```
+
+3. Open a terminal on a monitored node and execute a curl command to check whether POST requests can reach the Ansible Event-Driven server so that webhooks from PCP will reach the Event-Driven server. Also, replace the IP address `192.168.56.4` with your actual Ansible Event-Driven`s host address.
+```
+$ curl -H 'Content-Type: application/json' -d "{\"message\": \"Ansible is super cool\"}" 192.168.56.4:5000
+```
+
+4. If POST request reaches Ansible Event-Driven server running by a container, you'll see a log outputs like this:
+```
+$ sudo podman run -p 5000:5000  -v /home/vagrant/work/GreenOps-Tracker:/work:z quay.io/ansible/ansible-rulebook ansible-rulebook --rulebook /work/pcpEventRules.yml -i /work/inventory.yml --verbose
+2024-05-30 13:29:30,306 - ansible_rulebook.app - INFO - Starting sources
+2024-05-30 13:29:30,306 - ansible_rulebook.app - INFO - Starting rules
+2024-05-30 13:29:30,307 - drools.ruleset - INFO - Using jar: /app/.local/lib/python3.9/site-packages/drools/jars/drools-ansible-rulebook-integration-runtime-1.0.6-SNAPSHOT.jar
+2024-05-30 13:29:31 039 [main] INFO org.drools.ansible.rulebook.integration.api.rulesengine.AbstractRulesEvaluator - Start automatic pseudo clock with a tick every 100 milliseconds
+2024-05-30 13:29:31,058 - ansible_rulebook.engine - INFO - load source ansible.eda.webhook
+2024-05-30 13:29:31,486 - ansible_rulebook.engine - INFO - loading source filter eda.builtin.insert_meta_info
+2024-05-30 13:29:31,881 - ansible_rulebook.engine - INFO - Waiting for all ruleset tasks to end
+2024-05-30 13:29:31,881 - ansible_rulebook.rule_set_runner - INFO - Waiting for actions on events from Listen for RHEL Performance Co-Pilot events
+2024-05-30 13:29:31,882 - ansible_rulebook.rule_set_runner - INFO - Waiting for events, ruleset: Listen for RHEL Performance Co-Pilot events
+2024-05-30 13:29:31 881 [drools-async-evaluator-thread] INFO org.drools.ansible.rulebook.integration.api.io.RuleExecutorChannel - Async channel connected
+2024-05-30 13:32:26,946 - aiohttp.access - INFO - 192.168.56.3 [30/May/2024:13:32:26 +0000] "POST / HTTP/1.1" 200 150 "-" "curl/8.2.1"
+2024-05-30 13:32:26 949 [main] INFO org.drools.ansible.rulebook.integration.api.rulesengine.MemoryMonitorUtil - Memory occupation threshold set to 90%
+2024-05-30 13:32:26 949 [main] INFO org.drools.ansible.rulebook.integration.api.rulesengine.MemoryMonitorUtil - Memory check event count threshold set to 64
+2024-05-30 13:32:26 950 [main] INFO org.drools.ansible.rulebook.integration.api.rulesengine.MemoryMonitorUtil - Exit above memory occupation threshold set to false
+
+** 2024-05-30 13:32:27.002094 [debug] ******************************************
+Received: {'message': 'Ansible is super cool'}
+********************************************************************************
+```
+
+## Pattern 2: Install Ansible and Ansible Event-Driven directory on the server
 The installation process follows the official document:
 https://ansible.readthedocs.io/projects/rulebook/en/stable/installation.html
 
-Run the below commands on one of the fedora node:
+1. Run the below commands on one of the fedora node:
 ```
 $ sudo dnf --assumeyes install java-17-openjdk python3-pip
 $ export JAVA_HOME=/usr/lib/jvm/jre-17-openjdk
@@ -56,12 +104,9 @@ Install ansible.eda collection:
 $ ansible-galaxy collection install ansible.eda
 ```
 
-### Step 2: Clone this "GreenOps Tracker" repository on the Ansible node
-```
-$ git clone https://github.com/mahoutukaisali/GreenOps-Tracker
-```
+# Usage (pre-setup)
 
-### Step 3: Modify the cloned source code to suit your environments
+## Modify the cloned source code to comply with your environments
 Open `inventory.yml` file of this project and modify IP addresses and `sudo password`. Below is the current file contents. You can replace `192.168.57.10/192.168.57.11` with your pcp server's IP and replace `ansible_become_pass: changeme` with your `sudo password`.
 ```
 ---
