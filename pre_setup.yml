@@ -4,7 +4,7 @@
   gather_facts: no
 
   tasks:
-    - ansible.builtin.include_vars: vars/webhook.yml
+    - ansible.builtin.include_vars: playbooks/vars/webhook.yml
     
     - name: Install pcp packages on the managed nodes
       ansible.builtin.dnf:
