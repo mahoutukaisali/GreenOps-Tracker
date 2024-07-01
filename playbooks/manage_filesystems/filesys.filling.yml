@@ -2,8 +2,9 @@
 - name: EDA response to PMIE rule cpu.load_average
   hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
   become: true
+  gather_facts: false #The managed node is in a low performance at the moment, avoid unnecessary tasks.
   tasks: 
-    - ansible.builtin.include_vars: ../vars/webex.yml
+    - ansible.builtin.include_vars: ./webex.yml
 
     - name: Display ansible_eda.event.payload.pcp.pmie.message variable
       debug:
@@ -13,30 +14,22 @@
       debug:
         msg: "ansible_eda.event.payload.pcp.pmie.rule value: {{ ansible_eda.event.payload.pcp.pmie.rule }}"
 
-    - name: Collect file system space usage
+    - name: df -h result before delete files
       command: df -h
-      register: result
-
-    - name: Make /opt writable directory
-      ansible.builtin.file:
-        path: /opt
-        state: directory
-        mode: '0777'
-
-    - name: Save `df -h` command result
-      ansible.builtin.copy:
-        content: "{{ result.stdout }}"
-        dest: "/opt/filesys.filling_{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}.txt"
+      register: before_delete_files_df_result
     
-    - name: Find files unused for 30 days
-      command: find /tmp -type f -atime +30
+    - name: Find files unused for 7 days
+      command: find /tmp -type f -atime +7
       register: unused_files
 
-    - name: Delete unused files for 30 days
+    - name: Delete unused files for 7 days
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: "{{ unused_files.stdout }}" #"{{ item }}"
         state: absent
-      loop: "{{ unused_files.stdout }}"
+
+    - name: df -h result after delete files
+      command: df -h
+      register: after_delete_files_df_result
 
     - name: Cisco Webex Teams - Text Message to a Room
       community.general.cisco_webex:

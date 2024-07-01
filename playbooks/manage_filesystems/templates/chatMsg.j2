@@ -1,9 +1,13 @@
 pcp `filesys.filling` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. 
----The `df -h` result---
-{{ result.stdout }}"
+---The `df -h` result before delete files---
+{{ before_delete_files_df_result.stdout }}"
 ---
 
 ---Deleted files--- 
 {{ unused_files }}
+---
+
+---The `df -h` result after delete files---
+{{ after_delete_files_df_result.stdout }}"
 ---
 
