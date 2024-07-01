@@ -3,7 +3,7 @@ all:
   children:
     pcp_servers:
       hosts:
-        192.168.57.10:
-          ansible_become_pass: changeme
-        192.168.57.11:
-          ansible_become_pass: changeme
+        192.168.122.182:
+          ansible_become_pass: CHANGEME
+        #192.168.57.11:
+          #ansible_become_pass: redhat

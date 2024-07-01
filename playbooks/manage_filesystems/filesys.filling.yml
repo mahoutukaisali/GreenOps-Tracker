@@ -3,7 +3,7 @@
   hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
   become: true
   tasks: 
-    - ansible.builtin.include_vars: vars/webex.yml
+    - ansible.builtin.include_vars: ../vars/webex.yml
 
     - name: Display ansible_eda.event.payload.pcp.pmie.message variable
       debug:

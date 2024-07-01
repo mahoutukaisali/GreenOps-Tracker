@@ -28,7 +28,7 @@
       condition: event.payload.pcp.pmie.rule == "File system is filling up"
       action:
         run_playbook:
-          name: playbooks/manage_filesystems/filesys.filling.yml
+          name: /work/playbooks/manage_filesystems/filesys.filling.yml
 
     - name:  Display any contents of event.payload variable
       condition: event.payload is defined
