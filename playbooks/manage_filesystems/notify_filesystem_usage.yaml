@@ -1,0 +1,23 @@
+---
+- name: EDA response to PMIE rule filesys.filling when file system is 100% full.
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Import vars
+      ansible.builtin.include_vars: ./webex.yml
+
+    - name: Display ansible_eda.event.payload.pcp.pmie.message variable
+      ansible.builtin.debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.message value: {{ ansible_eda.event.payload.pcp.pmie.message }}"
+
+    - name: Display ansible_eda.event.payload.pcp.pmie.rule variable
+      ansible.builtin.debug:
+        msg: "ansible_eda.event.payload.pcp.pmie.rule value: {{ ansible_eda.event.payload.pcp.pmie.rule }}"
+
+    - name: Cisco Webex Teams - Text Message to a Room
+      community.general.cisco_webex:
+        recipient_type: roomId
+        recipient_id: "{{ room_id }}"
+        msg_type: markdown
+        personal_token: "{{ token }}"
+        msg: "{{ lookup('ansible.builtin.template', './templates/notify_filesystem_usage.j2') }}"

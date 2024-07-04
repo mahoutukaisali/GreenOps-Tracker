@@ -27,16 +27,8 @@
     - name: Respond to PMIE rule filesys.filling
       # Ansible cannot login to the managed node which is 100% full filesystem. 
       # Therefore, launch this rule only when the file system is not 100% full.
-      condition: 
-        all:
-          #- event.payload.pcp.pmie.rule == "File system is filling up" 
-          #- event.payload.pcp.pmie.message is not search("100%")
-          #- "'100' not in event.payload.pcp.pmie.message"
-          #- event.payload.pcp.pmie.message.find('100') == -1
-          #- event.payload.pcp.pmie.message not contains 100
-          #- event.payload.pcp.pmie.message is match("100",ignorecase=true)
-          #- event.payload.pcp.pmie.message == '100'
-          - "event.payload.pcp.pmie.message is not match('100%',ignorecase=true) and event.payload.pcp.pmie.rule == 'File system is filling up'" 
+      condition:
+        - "event.payload.pcp.pmie.message is not match('100%',ignorecase=true) and event.payload.pcp.pmie.rule == 'File system is filling up'" 
       action:
         run_playbook:
           name: playbooks/manage_filesystems/filesys.filling.yml
@@ -45,15 +37,7 @@
       # Ansible cannot login to the managed node which is 100% full filesystem. 
       # Therefore, launch this rule only when the file system is not 100% full.
       condition: 
-        all:
-          #- event.payload.pcp.pmie.rule == "File system is filling up" 
-          #- event.payload.pcp.pmie.message is not search("100%")
-          #- "'100' not in event.payload.pcp.pmie.message"
-          #- event.payload.pcp.pmie.message.find('100') == -1
-          #- event.payload.pcp.pmie.message not contains 100
-          #- event.payload.pcp.pmie.message is match("100",ignorecase=true)
-          #- event.payload.pcp.pmie.message == '100'
-          - "event.payload.pcp.pmie.message is match('100%',ignorecase=true) and event.payload.pcp.pmie.rule == 'File system is filling up'" 
+        - "event.payload.pcp.pmie.message is not match('100%',ignorecase=true) and event.payload.pcp.pmie.rule == 'File system is filling up'" 
       action:
         run_playbook:
           name: playbooks/manage_filesystems/filesys.filling.yml

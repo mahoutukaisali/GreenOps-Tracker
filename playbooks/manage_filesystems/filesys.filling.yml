@@ -38,4 +38,4 @@
         msg_type: markdown
         personal_token: "{{ token }}"
         msg: "{{ lookup('ansible.builtin.template', './templates/chatMsg.j2') }}"
-        #"pcp `filesys.filling` rule has been launced from the managed host {{ ansible_eda.event.payload.pcp.pmie.hostname }}. Please check this host.\nHere is `df -h` result.\n{{ result.stdout }}"
+        
