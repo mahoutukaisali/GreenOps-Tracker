@@ -1,3 +1,4 @@
 inventory.yml
 playbooks/vars/
 playbooks/manage_filesystems/vars/
+zombie
