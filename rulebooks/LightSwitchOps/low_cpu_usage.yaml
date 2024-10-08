@@ -7,7 +7,7 @@
 
   rules:
     - name: Respond to PMIE rule cpu.util
-      condition: event.payload.pcp.pmie.rule == "High average processor utilization"      
+      condition: event.payload.pcp.pmie.rule == "Low average processor utilization"       
       action:
         run_playbook:
-          name: playbooks/cpu.util.yml
+          name: playbooks/LightSwitchOps/low_cpu_usage.yaml

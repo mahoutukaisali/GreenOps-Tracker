@@ -1,0 +1,14 @@
+- name: Listen for Linux TCP request queue full drops
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+
+  rules:
+    - name: Respond to TCP request queue full drops
+      condition: event.payload.pcp.pmie.rule == "TCP request queue full SYN cookie replies"
+      #"TCP request queue full drops"      
+      action:
+        run_playbook:
+          name: /work/playbooks/tcp/network_tcpqfulldrops.yaml

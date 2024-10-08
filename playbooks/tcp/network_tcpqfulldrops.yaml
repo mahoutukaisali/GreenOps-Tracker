@@ -1,0 +1,12 @@
+---
+- name: EDA response to PMIE rule cpu.load_average
+  hosts: "{{ ansible_eda.event.payload.pcp.pmie.hostname }}"
+  become: true
+  tasks:
+    - name: Increase net.ipv4.tcp_max_syn_backlog
+      ansible.posix.sysctl:
+        name: net.ipv4.tcp_max_syn_backlog
+        value: 4096
+        sysctl_file: /etc/sysctl.conf
+    #- name: Ajust Nginx worker_processes to match the kernel
+    #  ansible.builtin.lineinfile: worker_processes auto;
